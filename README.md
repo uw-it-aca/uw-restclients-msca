@@ -1,5 +1,5 @@
--# uw-restclients-msca
--Restclient providing access to UW MSCA API
+# uw-restclients-msca
+Restclient providing access to UW MSCA API
 
 [![Build Status](https://github.com/uw-it-aca/uw-restclients-msca/workflows/tests/badge.svg?branch=main)](https://github.com/uw-it-aca/uw-restclients-msca/actions)
 [![Coverage Status](https://coveralls.io/repos/github/uw-it-aca/uw-restclients-msca/badge.svg?branch=main)](https://coveralls.io/github/uw-it-aca/uw-restclients-msca?branch=main)
