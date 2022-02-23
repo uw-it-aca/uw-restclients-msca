@@ -1,0 +1,2 @@
+include uw_msca/VERSION
+recursive-include uw_msca *
