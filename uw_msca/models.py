@@ -11,11 +11,11 @@ class ValidatedUser(models.Model):
     valid = models.NullBooleanField()
 
     def is_valid(self):
-        return self.valid == True
+        return self.valid
 
     def from_json(self, data):
         self.name = data['name']
-        self.valid = data.get('valid') == "true"
+        self.valid = data.get('valid', '') == "true"
         return self
 
     def json_data(self):
