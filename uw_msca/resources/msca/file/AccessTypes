@@ -1,17 +1,16 @@
 [{
-    'code': '1',
-    'name': 'Full Access'
+    "code": "1",
+    "name": "Full Access"
 },
 {
-    'code': '2',
-    'name': 'Send As'
+    "code": "2",
+    "name": "Send As"
 },
 {
-    'code': '3',
-    'name': 'Calendar Delegate'
+    "code": "3",
+    "name": "Calendar Delegate"
 },
 {
-    'code': '4',
-    'name': 'Full Access and Send as'
+    "code": "4",
+    "name": "Full Access and Send as"
 }]
-
