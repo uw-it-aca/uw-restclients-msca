@@ -29,8 +29,6 @@ def get_resource(url):
     if response.status != 200:
         raise DataFailureException(url, response.status, response.data)
 
-    _test_for_invalid_user(url, response.data)
-
     logger.debug("GET {0} ==data==> {1}".format(url, response.data))
 
     return response.data
