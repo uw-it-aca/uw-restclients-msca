@@ -1,7 +1,8 @@
-# Copyright 2021 UW-IT, University of Washington
+# Copyright 2022 UW-IT, University of Washington
 # SPDX-License-Identifier: Apache-2.0
+
 """
-Interface for interacting with the UWNetID Web Service Supported resource.
+Interface for interacting with UW MSCA outlook API
 """
 
 import logging
