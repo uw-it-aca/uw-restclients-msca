@@ -1,0 +1,20 @@
+{
+  "value": [
+    {
+      "id": "1",
+      "displayname": "Full Access"
+    },
+    {
+      "id": "2",
+      "displayname": "Send As"
+    },
+    {
+      "id": "3",
+      "displayname": "Send on Behalf"
+    },
+    {
+      "id": "4",
+      "displayname": "Full Access and Send As"
+    }
+  ]
+}

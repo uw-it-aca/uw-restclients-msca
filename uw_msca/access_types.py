@@ -27,7 +27,7 @@ def _msca_access_types_url():
     """
     Return UW MSCA uri for Office access type resource
     """
-    return "{}/AccessTypes".format(url_base())
+    return "{}/GetAccessRights".format(url_base())
 
 
 def _json_to_supported(response_body):
