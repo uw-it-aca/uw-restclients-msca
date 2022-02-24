@@ -3,7 +3,6 @@
 
 import json
 from restclients_core import models
-from dateutil.parser import parse
 
 
 class ValidatedUser(models.Model):

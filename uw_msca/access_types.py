@@ -36,7 +36,8 @@ def _json_to_supported(response_body):
     """
     data = json.loads(response_body)
     access_types = []
-    for access_type in data.get("AccessTypes", []):
+
+    for access_type in data:
         access_types.append(AccessType().from_json(access_type))
 
     return access_types

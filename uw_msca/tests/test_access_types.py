@@ -11,6 +11,3 @@ class AccessTypesTest(TestCase):
     def test_access_types(self):
         access_types = get_access_types()
         self.assertEquals(len(access_types), 2)
-
-        for acccess_type in access_types:
-            pass
