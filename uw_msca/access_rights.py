@@ -20,7 +20,7 @@ def get_access_rights():
     """
     url = _msca_access_rights_url()
     response = get_resource(url)
-    return _json_to_supported(response['value'])
+    return _json_to_supported(response)
 
 
 def _msca_access_rights_url():
@@ -37,7 +37,7 @@ def _json_to_supported(response_body):
     data = json.loads(response_body)
     access_rights = []
 
-    for access_right in data:
+    for access_right in data.get('value'):
         access_rights.append(AccessRight().from_json(access_right))
 
     return access_rights
