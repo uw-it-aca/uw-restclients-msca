@@ -25,18 +25,18 @@ class ValidatedUser(models.Model):
         return json.dumps(self.json_data())
 
 
-class AccessType(models.Model):
-    code = models.SmallIntegerField()
-    name = models.SlugField(max_length=32)
+class AccessRight(models.Model):
+    id = models.SmallIntegerField()
+    displayname = models.SlugField(max_length=32)
 
     def from_json(self, data):
-        self.code = data.get('code')
-        self.name = data.get('name')
+        self.i = data.get('id')
+        self.displayname = data.get('displayname')
         return self
 
     def json_data(self):
-        return {'name': self.name,
-                'code': self.code}
+        return {'displayname': self.displayname,
+                'id': self.id}
 
     def __str__(self):
         return json.dumps(self.json_data())

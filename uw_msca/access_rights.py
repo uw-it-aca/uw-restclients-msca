@@ -7,25 +7,25 @@ Interface for interacting with UW MSCA outlook API
 
 import logging
 import json
-from uw_msca.models import AccessType
+from uw_msca.models import AccessRight
 from uw_msca import url_base, get_resource
 
 
 logger = logging.getLogger(__name__)
 
 
-def get_access_types():
+def get_access_rights():
     """
-    Returns list of Outlook mailbox Access Types
+    Returns list of Outlook mailbox Access Rights
     """
-    url = _msca_access_types_url()
+    url = _msca_access_rights_url()
     response = get_resource(url)
-    return _json_to_supported(response)
+    return _json_to_supported(response['value'])
 
 
-def _msca_access_types_url():
+def _msca_access_rights_url():
     """
-    Return UW MSCA uri for Office access type resource
+    Return UW MSCA uri for Office access right resource
     """
     return "{}/GetAccessRights".format(url_base())
 
@@ -35,9 +35,9 @@ def _json_to_supported(response_body):
     Returns a list of Supported objects
     """
     data = json.loads(response_body)
-    access_types = []
+    access_rights = []
 
-    for access_type in data:
-        access_types.append(AccessType().from_json(access_type))
+    for access_right in data:
+        access_rights.append(AccessRight().from_json(access_right))
 
-    return access_types
+    return access_rights
