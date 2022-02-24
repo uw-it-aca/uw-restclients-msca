@@ -31,7 +31,7 @@ class AccessType(models.Model):
 
     def from_json(self, data):
         self.code = data.get('code')
-        self.name = data['name']
+        self.name = data.get('name')
         return self
 
     def json_data(self):
