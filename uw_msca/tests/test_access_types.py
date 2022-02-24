@@ -10,4 +10,4 @@ from uw_msca.util import fdao_msca_override
 class AccessTypesTest(TestCase):
     def test_access_types(self):
         access_types = get_access_types()
-        self.assertEquals(len(access_types), 2)
+        self.assertEquals(len(access_types), 4)
