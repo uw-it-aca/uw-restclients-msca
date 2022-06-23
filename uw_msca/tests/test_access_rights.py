@@ -10,4 +10,4 @@ from uw_msca.util import fdao_msca_override
 class AccessRightsTest(TestCase):
     def test_get_access_rights(self):
         access_rights = get_access_rights()
-        self.assertEquals(len(access_rights), 4)
+        self.assertEquals(len(access_rights), 3)

@@ -7,7 +7,6 @@ the uwnetid subscription web service.
 """
 
 import logging
-import json
 from commonconf import settings
 from restclients_core.exceptions import DataFailureException
 from uw_msca.dao import MSCA_DAO
@@ -18,8 +17,9 @@ logger = logging.getLogger(__name__)
 
 
 def url_base():
+    # until msca api finalized
     return ""
-    return '/outlook/{}'.format(
+    return '/mailbox/{}'.format(
         getattr(settings, 'RESTCLIENTS_MSCA_VERSION', 'v1'))
 
 

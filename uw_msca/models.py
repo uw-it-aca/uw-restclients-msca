@@ -25,6 +25,26 @@ class ValidatedUser(models.Model):
         return json.dumps(self.json_data())
 
 
+class Delegate(models.Model):
+    user = models.SlugField(max_length=32)
+    delegate = models.SlugField(max_length=32)
+    access_right = models.SlugField(max_length=32)
+
+    def from_json(self, user, data):
+        self.user = user
+        self.delegate = data['User']
+        self.access_right = data['AccessRights']
+        return self
+
+    def json_data(self):
+        return {'user': self.user,
+                'delegate': self.name,
+                'access_right': self.access_right}
+
+    def __str__(self):
+        return json.dumps(self.json_data())
+
+
 class AccessRight(models.Model):
     right_id = models.SmallIntegerField()
     displayname = models.SlugField(max_length=32)

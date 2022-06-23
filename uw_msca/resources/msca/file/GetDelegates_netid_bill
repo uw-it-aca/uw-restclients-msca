@@ -1,0 +1,9 @@
+{
+  "TargetNetid": "bill",
+  "Delegates": [
+    {
+      "User": "jstaff",
+      "AccessRights": "SendOnBehalf"
+    }
+  ]
+}
