@@ -35,3 +35,27 @@ def _msca_get_delegate_url(netid):
     Return UW MSCA uri for Office access delegates
     """
     return "{}/GetDelegates?netid={}".format(url_base(), netid)
+
+
+def remove_delegate(netid, delegate, access_type):
+    """
+    Returns with delegate access removed from netid resource
+    """
+    url = _msca_remove_delegate_url(netid, delegate, access_type)
+    response = get_resource(url)
+
+    json_response = json.loads(response)
+    user = json_response['TargetNetid']
+    delegates = []
+    for delegate in json_response['Delegates']:
+        delegates.append(Delegate().from_json(user, delegate))
+
+    return delegates
+
+
+def _msca_remove_delegate_url(netid, delegate, access_type):
+    """
+    Return UW MSCA uri for removing delegate access
+    """
+    return "{}/RemoveDelegatePerms?netid={}?delegate={}&accesstype={}".format(
+        url_base('v2'), netid, delegate, access_type)

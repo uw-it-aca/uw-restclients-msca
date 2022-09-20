@@ -16,10 +16,10 @@ DAO = MSCA_DAO()
 logger = logging.getLogger(__name__)
 
 
-def url_base():
+def url_base(override=None):
     # until msca api finalized
-    return ""
-    return '/mailbox/{}'.format(
+    return '/{}/{}'.format(
+        override if override else 'mbx',
         getattr(settings, 'RESTCLIENTS_MSCA_VERSION', 'v1'))
 
 
