@@ -44,9 +44,9 @@ def set_delegate(netid, delegate, access_type):
     """
     url = _msca_set_delegate_url()
     params = {
-        netid: netid,
-        delegate: delegate,
-        access_type: access_type
+        'netid': netid,
+        'delegate': delegate,
+        'access_type': access_type
     }
 
     response = post_resource(url, parse.urlencode(params))
@@ -73,9 +73,9 @@ def remove_delegate(netid, delegate, access_type):
     """
     url = _msca_remove_delegate_url()
     params = {
-        netid: netid,
-        delegate: delegate,
-        access_type: access_type
+        'netid': netid,
+        'delegate': delegate,
+        'access_type': access_type
     }
 
     response = post_resource(url, parse.urlencode(params))
