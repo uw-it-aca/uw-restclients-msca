@@ -1,6 +1,6 @@
 {
     "TargetNetid": "bill",
-    "Delegates": [{
+    "Delegates": [
         {
             "User": "jstaff@uw.edu",
             "AccessRights": "FullAccess"
