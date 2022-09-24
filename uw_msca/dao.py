@@ -14,5 +14,5 @@ class MSCA_DAO(DAO):
         return [abspath(os.path.join(dirname(__file__), "resources"))]
 
     def _custom_headers(self, method, url, headers, body):
-        return {"Ocp-Apim-Subscription-Key": '"{}"'.format(
+        return {"Ocp-Apim-Subscription-Key": "{}".format(
             self.get_service_setting("SUBSCRIPTION_KEY", ""))}
