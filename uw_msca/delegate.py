@@ -46,7 +46,7 @@ def set_delegate(netid, delegate, access_type):
     params = {
         'netid': netid,
         'delegate': delegate,
-        'access_type': access_type
+        'accesstype': access_type
     }
 
     response = post_resource(url, parse.urlencode(params))
@@ -75,7 +75,7 @@ def remove_delegate(netid, delegate, access_type):
     params = {
         'netid': netid,
         'delegate': delegate,
-        'access_type': access_type
+        'accesstype': access_type
     }
 
     response = post_resource(url, parse.urlencode(params))
