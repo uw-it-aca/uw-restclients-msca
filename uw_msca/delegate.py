@@ -43,7 +43,7 @@ def set_delegate(netid, delegate, access_type):
     Returns with delegate access set for netid resource
     """
     url = _msca_set_delegate_url()
-    body = json.loads({
+    body = json.dumps({
         'netid': netid,
         'delegate': delegate,
         'accesstype': access_type
@@ -75,7 +75,7 @@ def remove_delegate(netid, delegate, access_type):
     Returns with delegate access removed from netid resource
     """
     url = _msca_remove_delegate_url()
-    body = json.loads({
+    body = json.dumps({
         'netid': netid,
         'delegate': delegate,
         'accesstype': access_type
