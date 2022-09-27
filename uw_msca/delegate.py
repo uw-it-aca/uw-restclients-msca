@@ -58,7 +58,8 @@ def set_delegate(netid, delegate, access_type):
         for delegate in json_response['Delegates']:
             delegates.append(Delegate().from_json(user, delegate))
     except Exception as ex:
-        logger.error("set_delegate response parse: {}".format(ex))
+        logger.error("set_delegate response: -->{}<-- error: {}".format(
+            response, ex))
 
     return delegates
 
@@ -90,7 +91,8 @@ def remove_delegate(netid, delegate, access_type):
         for delegate in json_response['Delegates']:
             delegates.append(Delegate().from_json(user, delegate))
     except Exception as ex:
-        logger.error("remove_delegate response parse: {}".format(ex))
+        logger.error("remove_delegate response: -->{}<-- error: {}".format(
+            response, ex))
 
     return delegates
 
