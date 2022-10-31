@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from unittest import TestCase
-from uw_msca.delegates import get_delegates
+from uw_msca.delegate import get_delegates
 from uw_msca.util import fdao_msca_override
 
 

@@ -35,7 +35,7 @@ def _msca_get_delegate_url(netid):
     """
     Return UW MSCA uri for Office access delegates
     """
-    return "{}/GetDelegates?netid={}".format(url_base(), netid)
+    return "{}/{}/GetDelegates".format(url_base(), netid)
 
 
 def set_delegate(netid, delegate, access_type):
