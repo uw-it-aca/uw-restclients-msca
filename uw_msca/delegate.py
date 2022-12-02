@@ -7,7 +7,6 @@ Interface for interacting with the UW MSCA outlook API
 
 from uw_msca.models import Delegate
 from uw_msca import url_base, get_resource, post_resource
-from urllib import parse
 import json
 import logging
 
@@ -42,7 +41,7 @@ def set_delegate(netid, delegate, access_type):
     """
     Returns with delegate access set for netid resource
     """
-    url = _msca_set_delegate_url()
+    url = _msca_set_delegate_url(netid, delegate, access_type)
     body = json.dumps({
         'netid': netid,
         'delegate': delegate,
@@ -64,18 +63,19 @@ def set_delegate(netid, delegate, access_type):
     return delegates
 
 
-def _msca_set_delegate_url():
+def _msca_set_delegate_url(netid, delegate, access_type):
     """
     Return UW MSCA uri to set delegate access
     """
-    return "{}/SetDelegatePerms".format(url_base())
+    return "{}/{}/SetDelegatePerms/{}/{}f".format(
+        url_base(), netid, delegate, access_type)
 
 
 def remove_delegate(netid, delegate, access_type):
     """
     Returns with delegate access removed from netid resource
     """
-    url = _msca_remove_delegate_url()
+    url = _msca_remove_delegate_url(netid, delegate, access_type)
     body = json.dumps({
         'netid': netid,
         'delegate': delegate,
@@ -97,8 +97,9 @@ def remove_delegate(netid, delegate, access_type):
     return delegates
 
 
-def _msca_remove_delegate_url():
+def _msca_remove_delegate_url(netid, delegage, access_type):
     """
     Return UW MSCA uri for removing delegate access
     """
-    return "{}/RemoveDelegatePerms".format(url_base())
+    return "{}/{}/RemoveDelegatePerms".format(
+        url_base(), netid, delegage, access_type)
