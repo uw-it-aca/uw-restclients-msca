@@ -67,7 +67,7 @@ def _msca_set_delegate_url(netid, delegate, access_type):
     """
     Return UW MSCA uri to set delegate access
     """
-    return "{}/{}/SetDelegatePerms/{}/{}f".format(
+    return "{}/{}/SetDelegatePerms/{}/{}".format(
         url_base(), netid, delegate, access_type)
 
 
