@@ -101,5 +101,5 @@ def _msca_remove_delegate_url(netid, delegage, access_type):
     """
     Return UW MSCA uri for removing delegate access
     """
-    return "{}/{}/RemoveDelegatePerms".format(
+    return "{}/{}/RemoveDelegatePerms/{}/{}".format(
         url_base(), netid, delegage, access_type)
