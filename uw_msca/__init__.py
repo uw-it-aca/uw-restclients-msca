@@ -47,3 +47,18 @@ def post_resource(url, body):
     logger.debug("POST {0}s ==data==> {1}".format(url, response.data))
 
     return response.data
+
+
+def patch_resource(url, body):
+    response = DAO.patchURL(url, {
+        'Content-Type': 'application/json',
+        'Acept': 'application/json',
+    }, body)
+    logger.debug("PATCH {0} ==status==> {1}".format(url, response.status))
+
+    if response.status != 200:
+        raise DataFailureException(url, response.status, response.data)
+
+    logger.debug("PATCH {0}s ==data==> {1}".format(url, response.data))
+
+    return response.data
