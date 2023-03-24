@@ -14,35 +14,42 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def _delegate_url_base(netid):
+    """
+    Return UW MSCA base uri for Office access delegates
+    """
+    return "{}/{}".format(url_base(), netid)
+
+
 def _msca_get_delegate_url(netid):
     """
     Return UW MSCA uri for Office access delegates
     """
-    return "{}/{}/GetDelegates".format(url_base(), netid)
+    return "{}/GetDelegates".format(_delegate_url_base(netid))
 
 
 def _msca_set_delegate_url(netid, delegate, access_type):
     """
     Return UW MSCA uri to set delegate access
     """
-    return "{}/{}/SetDelegatePerms/{}/{}".format(
-        url_base(), netid, delegate, access_type)
+    return "{}/SetDelegatePerms/{}/{}".format(
+        _delegate_url_base(netid), delegate, access_type)
 
 
 def _msca_update_delegate_url(netid, delegate, old_access_type, access_type):
     """
     Return UW MSCA uri to set delegate access
     """
-    return "{}/{}/UpdateDelegatePerms-azf/{}/{}/{}".format(
-        url_base(), netid, delegate, old_access_type, access_type)
+    return "{}/UpdateDelegatePerms-azf/{}/{}/{}".format(
+        _delegate_url_base(netid), delegate, old_access_type, access_type)
 
 
-def _msca_remove_delegate_url(netid, delegage, access_type):
+def _msca_remove_delegate_url(netid, delegate, access_type):
     """
     Return UW MSCA uri for removing delegate access
     """
-    return "{}/{}/RemoveDelegatePerms/{}/{}".format(
-        url_base(), netid, delegage, access_type)
+    return "{}/RemoveDelegatePerms/{}/{}".format(
+        _delegate_url_base(netid), delegate, access_type)
 
 
 def get_delegates(netid):
