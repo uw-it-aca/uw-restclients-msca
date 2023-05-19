@@ -6,7 +6,8 @@ Interface for interacting with the UW MSCA outlook API
 """
 
 from uw_msca.models import Delegate
-from uw_msca import url_base, get_resource, post_resource, patch_resource
+from uw_msca import (url_base, get_resource, post_resource,
+                     patch_resource, get_external_resource)
 import json
 import logging
 
@@ -26,6 +27,13 @@ def _msca_get_delegate_url(netid):
     Return UW MSCA uri for Office access delegates
     """
     return "{}/GetDelegates".format(_delegate_url_base(netid))
+
+
+def _msca_get_all_delegates_csv_url():
+    """
+    Return UW MSCA uri for Office all access delegates
+    """
+    return "{}/GetDelegateCsv".format(url_base())
 
 
 def _msca_set_delegate_url(netid, delegate, access_type):
@@ -66,6 +74,19 @@ def get_delegates(netid):
         delegates.append(Delegate().from_json(user, delegate))
 
     return delegates
+
+
+def get_all_delegates():
+    """
+    method returns all delegations assigned in outlook via
+    two sequence request.  first, request url for all delegate csv.
+    second, request csv from url returned in first request.
+    from: https://pplat-apimgmt.azure-api.net/mbx/v1/GetDelegateCsv
+    """
+    delegates_csv_url = _msca_get_all_delegates_csv_url()
+    csv_url = get_resource(delegates_csv_url).decode('utf-8')
+    response = get_external_resource(csv_url)
+    return response.decode('utf-8').split('\r\n')
 
 
 def set_delegate(netid, delegate, access_type):
