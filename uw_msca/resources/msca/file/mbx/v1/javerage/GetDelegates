@@ -1,0 +1,13 @@
+{
+    "TargetNetid": "javerage",
+    "Delegates": [
+        {
+            "User": "jstaff@uw.edu",
+            "AccessRights": "FullAccessandSendAs"
+        },
+        {
+            "User": "bill@uw.edu",
+            "AccessRights": "SendAs"
+        }
+    ]
+}
