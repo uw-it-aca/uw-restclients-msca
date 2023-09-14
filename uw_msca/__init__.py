@@ -62,3 +62,18 @@ def patch_resource(url, body):
     logger.debug("PATCH {0}s ==data==> {1}".format(url, response.data))
 
     return response.data
+
+
+def get_external_resource(url):
+    response = DAO.get_external_resource(url)
+
+    logger.debug(
+        "external_resource {0} ==status==> {1}".format(url, response.status))
+
+    if response.status != 200:
+        raise DataFailureException(url, response.status, response.data)
+
+    logger.debug(
+        "external_resource {0}s ==data==> {1}".format(url, response.data))
+
+    return response.data
