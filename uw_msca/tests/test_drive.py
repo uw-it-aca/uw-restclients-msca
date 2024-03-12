@@ -1,3 +1,4 @@
+import contextlib
 import csv
 import os
 from unittest import TestCase
@@ -28,33 +29,44 @@ class Test_MSCA_GDrive_DAO(TestCase):
         assert ca_certs is None
 
 
+@contextlib.contextmanager
+def setup_fixtures_manually():
+    """
+    Sets up fixture state for two cases.
+    """
+    in_order_returns = [
+        # returned after first call
+        get_fixture("token_response_fixture"),
+        # returned after second call
+        get_fixture("report_response_fixture"),
+        # further calls raise a StopIteration
+    ]
+
+    with (
+        # patch this to simplify testing
+        patch.object(
+            GoogleDriveReport,
+            "_get_bearer_token_body",
+            return_value=sentinel.BEARER_TOKEN_BODY,
+        ),
+        # patch this to use mocked responses by call order
+        patch.object(
+            DAO,
+            "get_external_resource",
+            side_effect=in_order_returns
+        ) as get_external_resource,
+    ):
+        yield get_external_resource
+
+
 class GoogleDriveReportTest(TestCase):
     def setUp(self):
         self.instance = GoogleDriveReport()
 
     def test_main(self):
-        in_order_returns = [
-            # returned after first call
-            get_fixture("token_response_fixture"),
-            # returned after second call
-            get_fixture("report_response_fixture"),
-            # further calls raise a StopIteration
-        ]
-
-        with (
-            # patch this to simplify testing
-            patch.object(
-                self.instance,
-                "_get_bearer_token_body",
-                return_value=sentinel.BEARER_TOKEN_BODY,
-            ),
-            patch.object(
-                DAO,
-                "get_external_resource",
-                side_effect=in_order_returns
-            ) as get_external_resource,
-        ):
+        with setup_fixtures_manually() as get_external_resource:
             resp = self.instance.main()
+
         assert isinstance(resp, csv. DictReader)
 
         assert get_external_resource.call_count == 2
