@@ -1,4 +1,5 @@
 import csv
+import io
 import json
 import os
 from urllib.parse import urlencode
@@ -93,7 +94,8 @@ class GoogleDriveReport:
         # TODO: stream response via a header?
         report_resp = get_external_resource(latest_report_url)
         # TODO: define a proper model for this
-        return csv.DictReader(report_resp.decode())
+        filelike = io.StringIO(report_resp.decode())
+        return csv.DictReader(filelike)
 
     def _get_bearer_token_body(self):
         data = {
