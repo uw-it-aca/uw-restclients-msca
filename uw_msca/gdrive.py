@@ -14,6 +14,8 @@ from uw_msca import (
     url_base,
 )
 
+from uw_msca.models import GoogleDriveState
+
 
 class MSCA_GDrive_DAO(DAO):
     """
@@ -70,6 +72,18 @@ def get_external_resource(url, **kwargs):
         "external_resource {0}s ==data==> {1}".format(url, response.data))
 
     return response.data
+
+
+def get_google_drive_states():
+    gdr = GoogleDriveReport()
+    result = []
+
+    for record in gdr.main():
+        # pending TODO to Ken about the trailing "," on the header row
+        record.pop("")
+        result.append(GoogleDriveState(**record))
+
+    return result
 
 
 class GoogleDriveReport:

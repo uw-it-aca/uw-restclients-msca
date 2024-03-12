@@ -60,3 +60,15 @@ class AccessRight(models.Model):
 
     def __str__(self):
         return json.dumps(self.json_data())
+
+
+class GoogleDriveState(models.Model):
+    # max_length values informed by examining all current results
+    # TODO: more thorough solution
+    drive_id = models.SlugField(max_length=19)
+    drive_name = models.SlugField(max_length=125)
+    total_members = models.PositiveIntegerField()
+    org_unit = models.SlugField(max_length=15)
+    member = models.SlugField(max_length=66)
+    role = models.CharField(max_length=13)
+    query_date = models.DateTimeField()

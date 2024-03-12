@@ -14,6 +14,7 @@ from commonconf import settings
 from uw_msca.gdrive import (
     GoogleDriveReport,
     DAO,
+    get_google_drive_states,
 )
 
 
@@ -57,6 +58,14 @@ def setup_fixtures_manually():
         ) as get_external_resource,
     ):
         yield get_external_resource
+
+
+class GoogleDriveStateListTest(TestCase):
+    def test_get_google_drive_states(self):
+        with setup_fixtures_manually():
+            gdrive_states = get_google_drive_states()
+
+        assert len(gdrive_states) == 3
 
 
 class GoogleDriveReportTest(TestCase):
