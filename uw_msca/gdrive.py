@@ -79,8 +79,6 @@ def get_google_drive_states():
     result = []
 
     for record in gdr.main():
-        # pending TODO to Ken about the trailing "," on the header row
-        record.pop("")
         result.append(GoogleDriveState(**record))
 
     return result
