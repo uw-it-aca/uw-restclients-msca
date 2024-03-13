@@ -26,7 +26,7 @@ class Test_MSCA_GDrive_DAO(TestCase):
 
     def test_setting_ca_bundle(self):
         "Mike figuring out how to disable verification."
-        ca_certs = DAO.get_setting("CA_BUNDLE", default='something')
+        ca_certs = DAO.get_setting("CA_BUNDLE", default="something")
         assert ca_certs is None
 
 
@@ -54,7 +54,7 @@ def setup_fixtures_manually():
         patch.object(
             DAO,
             "get_external_resource",
-            side_effect=in_order_returns
+            side_effect=in_order_returns,
         ) as get_external_resource,
     ):
         yield get_external_resource
@@ -83,7 +83,8 @@ class GoogleDriveReportTest(TestCase):
 
         assert call1 == call(
             settings.RESTCLIENTS_MSCA_GDRIVE_OAUTH_TOKEN_URL,
-            body=sentinel.BEARER_TOKEN_BODY)
+            body=sentinel.BEARER_TOKEN_BODY,
+        )
         sas_key = "https://pplatreports.blob.core.windows.net/example-url"
         assert call2 == call(sas_key)
 
@@ -109,7 +110,7 @@ def get_fixture(name):
     tests_dir = os.path.abspath(os.path.dirname(__file__))
     resource_dir = os.path.join(tests_dir, "../resources")
     # TODO: inject the dao IFF this doesn't all quickly fold to one host
-    service_name = 'msca_gdrive'
+    service_name = "msca_gdrive"
     implementation_name = "file"
     from restclients_core.util.mock import load_resource_from_path
 
