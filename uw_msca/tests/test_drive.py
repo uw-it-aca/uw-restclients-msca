@@ -9,7 +9,7 @@ from unittest.mock import (
 )
 from urllib.parse import urlencode
 
-from commonconf import settings
+from commonconf import settings, override_settings
 
 from uw_msca.gdrive import (
     GoogleDriveReport,
@@ -18,7 +18,21 @@ from uw_msca.gdrive import (
 )
 
 
-class Test_MSCA_GDrive_DAO(TestCase):
+@override_settings(
+    RESTCLIENTS_MSCA_GDRIVE_OAUTH_TOKEN_URL="https://login.microsoftonline.com/example.uw.edu/oauth2/v2.0/token",
+    RESTCLIENTS_MSCA_GDRIVE_REPORT_SCOPE="api://beef821f-dead-46ac-9829-f9a87eb12c37/.default",
+    RESTCLIENTS_MSCA_GDRIVE_CLIENT_ID="beef821f-dead-46ac-9829-f9a87eb12c37",
+    RESTCLIENTS_MSCA_GDRIVE_CLIENT_SECRET="my-secret",
+    RESTCLIENTS_MSCA_GDRIVE_HOST="https://msca.hosts",
+    RESTCLIENTS_MSCA_GDRIVE_LATEST_REPORT_URL="/drive/getfile",
+    RESTCLIENTS_MSCA_GDRIVE_DAO_CLASS="Mock",
+)
+class BaseGDriveTest(TestCase):
+    "Base class for GDrive tests."
+    abstract = True
+
+
+class Test_MSCA_GDrive_DAO(BaseGDriveTest):
     def test_setting_host(self):
         "Mike figuring out the setting prefix is 'RESTCLIENTS_MSCA_GDRIVE_'"
         host = DAO.get_service_setting("HOST")
@@ -60,7 +74,7 @@ def setup_fixtures_manually():
         yield get_external_resource
 
 
-class GoogleDriveStateListTest(TestCase):
+class GoogleDriveStateListTest(BaseGDriveTest):
     def test_get_google_drive_states(self):
         with setup_fixtures_manually():
             gdrive_states = get_google_drive_states()
@@ -68,15 +82,16 @@ class GoogleDriveStateListTest(TestCase):
         assert len(gdrive_states) == 3
 
 
-class GoogleDriveReportTest(TestCase):
+class GoogleDriveReportTest(BaseGDriveTest):
     def setUp(self):
+        super().setUp()
         self.instance = GoogleDriveReport()
 
     def test_main(self):
         with setup_fixtures_manually() as get_external_resource:
             resp = self.instance.main()
 
-        assert isinstance(resp, csv. DictReader)
+        assert isinstance(resp, csv.DictReader)
 
         assert get_external_resource.call_count == 2
         call1, call2 = get_external_resource.call_args_list
