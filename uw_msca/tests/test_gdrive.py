@@ -10,6 +10,7 @@ from uw_msca.gdrive import (
     DAO,
     GoogleDriveState,
     get_google_drive_states,
+    set_drive_quota,
 )
 
 
@@ -55,6 +56,23 @@ class Test_get_google_drive_states(BaseGDriveTest):
 
         assert len(gdrive_states) == 3
         assert all(isinstance(X, GoogleDriveState) for X in gdrive_states)
+
+
+class Test_set_drive_quota(BaseGDriveTest):
+    def test(self):
+        drive_id = "0AIdwn8Py42DEADBEEF"
+        quota = "03 TB"
+        with patch.object(
+            DAO,
+            "get_external_resource",
+            side_effect=[get_fixture("token_response_fixture")],
+        ):
+            result = set_drive_quota(quota=quota, drive_id=drive_id)
+
+        # TODO: have to fix the drive ID here and also wait for Ken to make it work this way...
+        assert result == {
+            "message": f"Drive '{drive_id}' successfully moved to {quota}"
+        }
 
 
 def get_fixture(name):
