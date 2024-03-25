@@ -23,7 +23,7 @@ class MSCA_GDrive_DAO(DAO):
     """
 
     def service_name(self):
-        return 'msca_gdrive'
+        return "msca_gdrive"
 
     def service_mock_paths(self):
         return [os.path.abspath(os.path.join(os.path.dirname(__file__), "resources"))]  # noqa
@@ -33,9 +33,8 @@ class MSCA_GDrive_DAO(DAO):
         return self._load_resource("GET", url, headers, body)
 
     def get_external_resource(self, url, **kwargs):
-        http = PoolManager(
-            retries=Retry(total=1, connect=0, read=0, redirect=1))
-        return http.request('GET', url, **kwargs)
+        http = PoolManager(retries=Retry(total=1, connect=0, read=0, redirect=1))
+        return http.request("GET", url, **kwargs)
 
 
 DAO = MSCA_GDrive_DAO()
@@ -44,7 +43,7 @@ DAO = MSCA_GDrive_DAO()
 # copy/pasted from __init__ to use the correct DAO global
 # updated to include headers arg
 def get_resource(url, headers=None):
-    default_headers = {'Accept': 'application/json'}
+    default_headers = {"Accept": "application/json"}
     if headers:
         default_headers.update(headers)
 
@@ -63,14 +62,12 @@ def get_resource(url, headers=None):
 def get_external_resource(url, **kwargs):
     response = DAO.get_external_resource(url, **kwargs)
 
-    logger.debug(
-        "external_resource {0} ==status==> {1}".format(url, response.status))
+    logger.debug("external_resource {0} ==status==> {1}".format(url, response.status))
 
     if response.status != 200:
         raise DataFailureException(url, response.status, response.data)
 
-    logger.debug(
-        "external_resource {0}s ==data==> {1}".format(url, response.data))
+    logger.debug("external_resource {0}s ==data==> {1}".format(url, response.data))
 
     return response.data
 
