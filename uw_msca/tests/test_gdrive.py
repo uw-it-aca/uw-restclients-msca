@@ -1,19 +1,14 @@
-import contextlib
-import csv
 import os
 from unittest import TestCase
 from unittest.mock import (
-    call,
     patch,
-    sentinel,
 )
-from urllib.parse import urlencode
 
-from commonconf import settings, override_settings
+from commonconf import override_settings
 
 from uw_msca.gdrive import (
-    GoogleDriveReport,
     DAO,
+    GoogleDriveState,
     get_google_drive_states,
 )
 
@@ -24,7 +19,6 @@ from uw_msca.gdrive import (
     RESTCLIENTS_MSCA_GDRIVE_CLIENT_ID="beef821f-dead-46ac-9829-f9a87eb12c37",
     RESTCLIENTS_MSCA_GDRIVE_CLIENT_SECRET="my-secret",
     RESTCLIENTS_MSCA_GDRIVE_HOST="https://msca.hosts",
-    RESTCLIENTS_MSCA_GDRIVE_LATEST_REPORT_URL="/drive/getfile",
     RESTCLIENTS_MSCA_GDRIVE_DAO_CLASS="Mock",
 )
 class BaseGDriveTest(TestCase):
@@ -44,81 +38,23 @@ class Test_MSCA_GDrive_DAO(BaseGDriveTest):
         assert ca_certs is None
 
 
-@contextlib.contextmanager
-def setup_fixtures_manually():
-    """
-    Sets up fixture state for two cases.
-    """
-    in_order_returns = [
-        # returned after first call
-        get_fixture("token_response_fixture"),
-        # returned after second call
-        get_fixture("report_response_fixture"),
-        # further calls raise a StopIteration
-    ]
-
-    with (
-        # patch this to simplify testing
-        patch.object(
-            GoogleDriveReport,
-            "_get_bearer_token_body",
-            return_value=sentinel.BEARER_TOKEN_BODY,
-        ),
-        # patch this to use mocked responses by call order
-        patch.object(
+class Test_get_google_drive_states(BaseGDriveTest):
+    def test(self):
+        with patch.object(
             DAO,
             "get_external_resource",
-            side_effect=in_order_returns,
-        ) as get_external_resource,
-    ):
-        yield get_external_resource
-
-
-class GoogleDriveStateListTest(BaseGDriveTest):
-    def test_get_google_drive_states(self):
-        with setup_fixtures_manually():
+            side_effect=[
+                # returned after first call
+                get_fixture("token_response_fixture"),
+                # returned after second call
+                get_fixture("report_response_fixture"),
+                # further calls raise a StopIteration
+            ],
+        ):
             gdrive_states = get_google_drive_states()
 
         assert len(gdrive_states) == 3
-
-
-class GoogleDriveReportTest(BaseGDriveTest):
-    def setUp(self):
-        super().setUp()
-        self.instance = GoogleDriveReport()
-
-    def test_main(self):
-        with setup_fixtures_manually() as get_external_resource:
-            resp = self.instance.main()
-
-        assert isinstance(resp, csv.DictReader)
-
-        assert get_external_resource.call_count == 2
-        call1, call2 = get_external_resource.call_args_list
-
-        assert call1 == call(
-            settings.RESTCLIENTS_MSCA_GDRIVE_OAUTH_TOKEN_URL,
-            body=sentinel.BEARER_TOKEN_BODY,
-        )
-        sas_key = "https://pplatreports.blob.core.windows.net/example-url"
-        assert call2 == call(sas_key)
-
-    def test_get_bearer_token_body(self):
-        secret = "my-secret"
-        expected_data = {
-            "client_id": settings.RESTCLIENTS_MSCA_GDRIVE_CLIENT_ID,
-            "client_secret": secret,
-            "grant_type": "client_credentials",
-            "scope": settings.RESTCLIENTS_MSCA_GDRIVE_REPORT_SCOPE,
-        }
-        expected = urlencode(expected_data)
-        with patch.object(
-            settings,
-            "RESTCLIENTS_MSCA_GDRIVE_CLIENT_SECRET",
-            secret,
-        ):
-            actual = self.instance._get_bearer_token_body()
-        assert actual == expected
+        assert all(isinstance(X, GoogleDriveState) for X in gdrive_states)
 
 
 def get_fixture(name):

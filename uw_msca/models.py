@@ -72,3 +72,26 @@ class GoogleDriveState(models.Model):
     member = models.SlugField(max_length=66)
     role = models.CharField(max_length=13)
     query_date = models.DateTimeField()
+
+    @classmethod
+    def from_csv(cls, csv_data: dict):
+        """
+        Factory for creating from CSV data from a csv.DictReader.
+        """
+        drive_id = csv_data["DriveId"]
+        drive_name = csv_data["DriveName"]
+        total_members = csv_data["TotalMembers"]
+        org_unit = csv_data["OrgUnit"]
+        member = csv_data["Member"]
+        role = csv_data["Role"]
+        query_date = csv_data["QueryDate"]
+
+        return cls(
+            drive_id=drive_id,
+            drive_name=drive_name,
+            total_members=total_members,
+            org_unit=org_unit,
+            member=member,
+            role=role,
+            query_date=query_date,
+        )
