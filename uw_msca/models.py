@@ -60,3 +60,38 @@ class AccessRight(models.Model):
 
     def __str__(self):
         return json.dumps(self.json_data())
+
+
+class GoogleDriveState(models.Model):
+    # max_length values informed by examining all current results
+    # TODO: more thorough solution
+    drive_id = models.SlugField(max_length=19)
+    drive_name = models.SlugField(max_length=125)
+    total_members = models.PositiveIntegerField()
+    org_unit = models.SlugField(max_length=15)
+    member = models.SlugField(max_length=66)
+    role = models.CharField(max_length=13)
+    query_date = models.DateTimeField()
+
+    @classmethod
+    def from_csv(cls, csv_data: dict):
+        """
+        Factory for creating from CSV data from a csv.DictReader.
+        """
+        drive_id = csv_data["DriveId"]
+        drive_name = csv_data["DriveName"]
+        total_members = csv_data["TotalMembers"]
+        org_unit = csv_data["OrgUnit"]
+        member = csv_data["Member"]
+        role = csv_data["Role"]
+        query_date = csv_data["QueryDate"]
+
+        return cls(
+            drive_id=drive_id,
+            drive_name=drive_name,
+            total_members=total_members,
+            org_unit=org_unit,
+            member=member,
+            role=role,
+            query_date=query_date,
+        )
