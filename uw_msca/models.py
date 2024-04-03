@@ -13,13 +13,12 @@ class ValidatedUser(models.Model):
         return self.valid
 
     def from_json(self, data):
-        self.name = data['name']
-        self.valid = data.get('valid', '') == "true"
+        self.name = data["name"]
+        self.valid = data.get("valid", "") == "true"
         return self
 
     def json_data(self):
-        return {'name': self.name,
-                'valid': self.valid}
+        return {"name": self.name, "valid": self.valid}
 
     def __str__(self):
         return json.dumps(self.json_data())
@@ -32,14 +31,12 @@ class Delegate(models.Model):
 
     def from_json(self, user, data):
         self.user = user
-        self.delegate = data['User']
-        self.access_right = data['AccessRights']
+        self.delegate = data["User"]
+        self.access_right = data["AccessRights"]
         return self
 
     def json_data(self):
-        return {'user': self.user,
-                'delegate': self.name,
-                'access_right': self.access_right}
+        return {"user": self.user, "delegate": self.name, "access_right": self.access_right}
 
     def __str__(self):
         return json.dumps(self.json_data())
@@ -50,13 +47,12 @@ class AccessRight(models.Model):
     displayname = models.SlugField(max_length=32)
 
     def from_json(self, data):
-        self.right_id = data.get('id')
-        self.displayname = data.get('displayname')
+        self.right_id = data.get("id")
+        self.displayname = data.get("displayname")
         return self
 
     def json_data(self):
-        return {'displayname': self.displayname,
-                'id': self.right_id}
+        return {"displayname": self.displayname, "id": self.right_id}
 
     def __str__(self):
         return json.dumps(self.json_data())
