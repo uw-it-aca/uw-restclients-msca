@@ -68,30 +68,41 @@ class GoogleDriveState(models.Model):
     drive_id = models.SlugField(max_length=19)
     drive_name = models.SlugField(max_length=125)
     total_members = models.PositiveIntegerField()
-    org_unit = models.SlugField(max_length=15)
+    org_unit_id = models.SlugField(max_length=15)
+    # e.g., "100 TB"; longest observed as of 2024-04-03 is 12 long
+    org_unit_name = models.SlugField(max_length=20)
     member = models.SlugField(max_length=66)
     role = models.CharField(max_length=13)
     query_date = models.DateTimeField()
+    total_uw_owners = models.PositiveIntegerField()
 
     @classmethod
     def from_csv(cls, csv_data: dict):
         """
         Factory for creating from CSV data from a csv.DictReader.
         """
-        drive_id = csv_data["DriveId"]
-        drive_name = csv_data["DriveName"]
-        total_members = csv_data["TotalMembers"]
-        org_unit = csv_data["OrgUnit"]
-        member = csv_data["Member"]
-        role = csv_data["Role"]
-        query_date = csv_data["QueryDate"]
+        drive_id = csv_data["drive_id"]
+        drive_name = csv_data["drive_name"]
+        member = csv_data["member"]
+        role = csv_data["role"]
+        total_members = csv_data["total_members"]
+        total_uw_owners = csv_data["total_uwowners"]
+        org_unit_id = csv_data["org_unitID"]
+        org_unit_name = csv_data["org_unitName"]
+        query_date = csv_data["query_date"]
+        size = csv_data["size"]
+        size_capture_date = csv_data["size_capture_date"]
 
         return cls(
             drive_id=drive_id,
             drive_name=drive_name,
             total_members=total_members,
-            org_unit=org_unit,
+            total_uw_owners=total_uw_owners,
+            org_unit_id=org_unit_id,
+            org_unit_name=org_unit_name,
             member=member,
             role=role,
+            size=size,
+            size_capture_date=size_capture_date,
             query_date=query_date,
         )
