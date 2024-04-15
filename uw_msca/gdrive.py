@@ -1,98 +1,17 @@
 import csv
 import io
 import json
-import os
 from urllib.parse import urlencode
 
-from urllib3 import PoolManager
-from urllib3.util.retry import Retry
-
-from restclients_core.dao import DAO
-from restclients_core.exceptions import DataFailureException
 from uw_msca import (
-    logger,
+    DAO,
     url_base,
+    get_resource,
+    get_external_resource,
+    put_resource,
 )
 
 from uw_msca.models import GoogleDriveState
-
-
-class MSCA_GDrive_DAO(DAO):
-    """
-    MSCA client for Google Drive things.
-    """
-
-    def service_name(self):
-        return "msca_gdrive"
-
-    def service_mock_paths(self):
-        return [os.path.abspath(os.path.join(os.path.dirname(__file__), "resources"))]  # noqa
-
-    # modified to allow a body arg
-    def getURL(self, url, headers={}, body=None):
-        return self._load_resource("GET", url, headers, body)
-
-    def get_external_resource(self, url, **kwargs):
-        http = PoolManager(retries=Retry(total=1, connect=0, read=0, redirect=1))
-        return http.request("GET", url, **kwargs)
-
-
-DAO = MSCA_GDrive_DAO()
-
-
-# copy/pasted from __init__ to use the correct DAO global
-# updated to include headers arg
-def get_resource(url, headers=None):
-    default_headers = {"Accept": "application/json"}
-    if headers:
-        default_headers.update(headers)
-
-    response = DAO.getURL(url, default_headers)
-    logger.debug("GET {0} ==status==> {1}".format(url, response.status))
-    if response.status != 200:
-        raise DataFailureException(url, response.status, response.data)
-
-    logger.debug("GET {0} ==data==> {1}".format(url, response.data))
-
-    return response.data
-
-
-# copy/pasted from __init__ to use the correct DAO global
-# updated to include kwargs (body)
-def get_external_resource(url, **kwargs):
-    response = DAO.get_external_resource(url, **kwargs)
-
-    logger.debug("external_resource {0} ==status==> {1}".format(url, response.status))
-
-    if response.status != 200:
-        raise DataFailureException(url, response.status, response.data)
-
-    logger.debug("external_resource {0}s ==data==> {1}".format(url, response.data))
-
-    return response.data
-
-
-def put_resource(url, body, headers=None):
-    default_headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-    }
-    if headers:
-        default_headers.update(headers)
-
-    response = DAO.putURL(
-        url,
-        default_headers,
-        body,
-    )
-    logger.debug("PUT {0} ==status==> {1}".format(url, response.status))
-
-    if response.status != 200:
-        raise DataFailureException(url, response.status, response.data)
-
-    logger.debug("PUT {0}s ==data==> {1}".format(url, response.data))
-
-    return response.data
 
 
 def get_google_drive_states() -> list[GoogleDriveState]:
@@ -138,9 +57,9 @@ def set_drive_quota(quota: str, drive_id: str):
         # Mike asked for a JSON payload
         return json.loads(resp_data)
     except json.JSONDecodeError:
-        print("NO JSON YET")
-        # until Ken delivers
-        return resp_data.decode()
+        # until Ken delivers change
+        result = resp_data.decode()
+        return {"message": result}
 
 
 def _set_quota_url():
@@ -151,9 +70,9 @@ def _get_drivestate_url():
     return f"{_msca_drive_base_url()}/getfile"
 
 
-def _msca_drive_base_url():  # returns "/drive"
-    base = url_base(override="drive")
-    return base
+def _msca_drive_base_url():  # returns "/google/v1/drive"
+    base = url_base(override="google")
+    return f"{base}/drive"
 
 
 def _authorization_headers():

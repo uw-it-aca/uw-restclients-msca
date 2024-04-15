@@ -19,7 +19,10 @@ class MSCA_DAO(DAO):
         return {"Ocp-Apim-Subscription-Key": "{}".format(
             self.get_service_setting("SUBSCRIPTION_KEY", ""))}
 
-    def get_external_resource(self, url):
+    def getURL(self, url, headers={}, body=None):
+        return self._load_resource("GET", url, headers, body)
+
+    def get_external_resource(self, url, body=None):
         http = PoolManager(
             retries=Retry(total=1, connect=0, read=0, redirect=1))
-        return http.request('GET', url)
+        return http.request('GET', url, body=body)
