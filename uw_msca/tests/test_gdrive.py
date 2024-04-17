@@ -1,4 +1,3 @@
-import os
 from unittest import TestCase
 from unittest.mock import (
     patch,
@@ -16,7 +15,9 @@ from uw_msca.gdrive import (
 
 
 @override_settings(
-    RESTCLIENTS_MSCA_OAUTH_TOKEN_URL="https://login.microsoftonline.com/example.uw.edu/oauth2/v2.0/token",
+    RESTCLIENTS_MSCA_OAUTH_TOKEN_URL=(
+        "https://login.microsoftonline.com/example.uw.edu/oauth2/v2.0/token",
+    ),
     RESTCLIENTS_MSCA_REPORT_SCOPE="api://beef821f-dead-46ac-9829-f9a87eb12c37/.default",
     RESTCLIENTS_MSCA_CLIENT_ID="beef821f-dead-46ac-9829-f9a87eb12c37",
     RESTCLIENTS_MSCA_CLIENT_SECRET="my-secret",

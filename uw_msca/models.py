@@ -36,7 +36,11 @@ class Delegate(models.Model):
         return self
 
     def json_data(self):
-        return {"user": self.user, "delegate": self.name, "access_right": self.access_right}
+        return {
+            "user": self.user,
+            "delegate": self.name,
+            "access_right": self.access_right,
+        }
 
     def __str__(self):
         return json.dumps(self.json_data())
