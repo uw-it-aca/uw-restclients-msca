@@ -63,7 +63,7 @@ class Test_get_google_drive_states(BaseGDriveTest):
 class Test_set_drive_quota(BaseGDriveTest):
     def test(self):
         drive_id = "0AIdwn8Py42DEADBEEF"
-        quota = "03 TB"
+        quota = "3000GB"
         with patch.object(
             DAO,
             "get_external_resource",
