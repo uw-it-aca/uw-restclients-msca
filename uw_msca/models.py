@@ -14,7 +14,7 @@ class ValidatedUser(models.Model):
 
     def from_json(self, data):
         self.name = data["name"]
-        self.valid = data.get("valid", "") == "true"
+        self.valid = True if data.get("valid", False) else False
         return self
 
     def json_data(self):
