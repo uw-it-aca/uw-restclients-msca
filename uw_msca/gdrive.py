@@ -44,14 +44,17 @@ def get_google_drive_states():
 def set_drive_quota(quota: str, drive_id: str):
     """
     Update Google Drive to have the specified quota.
+
+    Args:
+        quota: str quota value e.g., "1000GB"
     """
     # in this case quota values are implicitly provided by the
     # Organizational Unit (OU) of the drive
     # so what we're really doing is moving a drive between OUs
-    data = {"orgUnit": quota, "driveId": drive_id}
+    data = {"quota": quota}
 
     resp_data = put_resource(
-        url=_set_quota_url(),
+        url=_set_quota_url(drive_id),
         body=json.dumps(data),
         headers=_authorization_headers(),
     )
@@ -65,8 +68,8 @@ def set_drive_quota(quota: str, drive_id: str):
         return {"message": result}
 
 
-def _set_quota_url():
-    return f"{_msca_drive_base_url()}/movedrive"
+def _set_quota_url(drive_id):
+    return f"{_msca_drive_base_url()}/{drive_id}/setquota"
 
 
 def _get_drivestate_url():
