@@ -63,7 +63,7 @@ class Test_get_google_drive_states(BaseGDriveTest):
 class Test_set_drive_quota(BaseGDriveTest):
     def test(self):
         drive_id = "0AIdwn8Py42DEADBEEF"
-        quota = "3000GB"
+        quota = 3000
         with patch.object(
             DAO,
             "get_external_resource",
@@ -74,5 +74,5 @@ class Test_set_drive_quota(BaseGDriveTest):
             result = set_drive_quota(quota=quota, drive_id=drive_id)
 
         assert result == {
-            "message": f"Drive '{drive_id}' successfully moved to {quota}"
+            "message": f"Drive '{drive_id}' successfully moved to 3000GB"
         }

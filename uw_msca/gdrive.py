@@ -41,17 +41,24 @@ def get_google_drive_states():
     return result
 
 
-def set_drive_quota(quota: str, drive_id: str):
+def set_drive_quota(quota: int, drive_id: str):
     """
     Update Google Drive to have the specified quota.
 
     Args:
-        quota: str quota value e.g., "1000GB"
+        quota: integer quota in units of GB. 100 == 100GB
+
+    Raises:
+        ValueError: quota is non-integer value.
     """
+    if isinstance(quota, int):
+        str_quota = f"{quota}GB"
+    else:
+        raise ValueError(f"quota {quota!r} is not an integer")
     # in this case quota values are implicitly provided by the
     # Organizational Unit (OU) of the drive
     # so what we're really doing is moving a drive between OUs
-    data = {"quota": quota}
+    data = {"quota": str_quota}
 
     resp_data = put_resource(
         url=_set_quota_url(drive_id),
