@@ -11,6 +11,8 @@ from commonconf import override_settings
 from uw_msca.gdrive import (
     DAO,
     GoogleDriveState,
+    get_default_org_unit,
+    get_default_quota,
     get_google_drive_states,
     set_drive_quota,
     _msca_drive_base_url,
@@ -38,6 +40,36 @@ class BaseGDriveTest(TestCase):
 class Test_MSCA_GDrive(BaseGDriveTest):
     def test_msca_drive_base_url(self):
         assert _msca_drive_base_url() == "/google/v1/drive"
+
+
+class Test_get_default_org_unit(BaseGDriveTest):
+    def test(self):
+        with patch.object(
+            DAO,
+            "get_external_resource",
+            side_effect=[
+                # returned after first call
+                DAO.getURL("/google/token_response_fixture"),
+                # further calls raise a StopIteration
+            ],
+        ):
+            result = get_default_org_unit()
+        assert result == "100GB"
+
+
+class Test_get_default_quota(BaseGDriveTest):
+    def test(self):
+        with patch.object(
+            DAO,
+            "get_external_resource",
+            side_effect=[
+                # returned after first call
+                DAO.getURL("/google/token_response_fixture"),
+                # further calls raise a StopIteration
+            ],
+        ):
+            result = get_default_quota()
+        assert result == 100
 
 
 class Test_get_google_drive_states(BaseGDriveTest):
