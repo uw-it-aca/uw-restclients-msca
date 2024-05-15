@@ -1,9 +1,17 @@
 # Copyright 2024 UW-IT, University of Washington
 # SPDX-License-Identifier: Apache-2.0
+"""
+This file contains the interfaces for MSCA's /google/vN/drive endpoints.
+
+Of note, maximum drive disk quota is not well supported by Google. At this time
+of writing support was provided only via the Organization Unit (OU) the drive
+is located in.
+"""
 
 import csv
 import io
 import json
+import logging
 from urllib.parse import urlencode
 
 from uw_msca import (
@@ -14,7 +22,27 @@ from uw_msca import (
     put_resource,
 )
 
-from uw_msca.models import GoogleDriveState
+from uw_msca.models import (
+    GoogleDriveState,
+    Quota,
+)
+
+
+def get_default_org_unit():
+    """
+    Return the default/subsidized Org Unit for Shared Drives.
+    """
+    org_unit_resp = get_resource(
+        url=_get_default_org_unit_url(),
+        headers=_authorization_headers(),
+    )
+    j = json.loads(org_unit_resp)
+    return j["ou"]
+
+
+def get_default_quota():
+    default_quota: str = get_default_org_unit()
+    return Quota.to_int(default_quota)
 
 
 def get_google_drive_states():
@@ -31,7 +59,19 @@ def get_google_drive_states():
 
     # wrap encoded bytes such that they can be iterated over per-line
     filelike = io.TextIOWrapper(io.BytesIO(report_resp))
+
     records = csv.DictReader(filelike)
+    if not set(records.fieldnames).issuperset(
+        GoogleDriveState.EXPECTED_CSV_FIELDS
+    ):
+        missing = [
+            X
+            for X in GoogleDriveState.EXPECTED_CSV_FIELDS
+            if X not in records.fieldnames
+        ]
+        logging.error(
+            f"Missing expected fields from {_get_drivestate_url()}: {missing}"
+        )
 
     result = []
 
@@ -41,17 +81,25 @@ def get_google_drive_states():
     return result
 
 
-def set_drive_quota(quota: str, drive_id: str):
+def set_drive_quota(quota: int, drive_id: str):
     """
     Update Google Drive to have the specified quota.
+
+    Args:
+        quota: integer quota in units of GB. 100 == 100GB
+
+    Raises:
+        ValueError: quota is non-integer value.
     """
+    str_quota = Quota.to_str(quota)
+
     # in this case quota values are implicitly provided by the
     # Organizational Unit (OU) of the drive
     # so what we're really doing is moving a drive between OUs
-    data = {"orgUnit": quota, "driveId": drive_id}
+    data = {"quota": str_quota}
 
     resp_data = put_resource(
-        url=_set_quota_url(),
+        url=_set_quota_url(drive_id),
         body=json.dumps(data),
         headers=_authorization_headers(),
     )
@@ -65,8 +113,12 @@ def set_drive_quota(quota: str, drive_id: str):
         return {"message": result}
 
 
-def _set_quota_url():
-    return f"{_msca_drive_base_url()}/movedrive"
+def _set_quota_url(drive_id):
+    return f"{_msca_drive_base_url()}/{drive_id}/setquota"
+
+
+def _get_default_org_unit_url():
+    return f"{_msca_drive_base_url()}/defaultou"
 
 
 def _get_drivestate_url():

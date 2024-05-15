@@ -86,6 +86,23 @@ class GoogleDriveState(models.Model):
     role = models.CharField(max_length=13)
     query_date = models.DateTimeField()
     total_uw_owners = models.PositiveIntegerField()
+    # TODO: where is size, size_capture_date, etc? clean up Mike!
+
+    EXPECTED_CSV_FIELDS = (
+        "id",
+        "drive_id",
+        "drive_name",
+        "member",
+        "role",
+        "total_members",
+        "total_uwowners",
+        "org_unitID",
+        "org_unitName",
+        "query_date",
+        "size",
+        "file_count",
+        "size_capture_date",
+    )
 
     @classmethod
     def from_csv(cls, csv_data: dict):
@@ -102,18 +119,56 @@ class GoogleDriveState(models.Model):
         org_unit_name = csv_data["org_unitName"]
         query_date = csv_data["query_date"]
         size = csv_data["size"]
+        file_count = csv_data["file_count"]
         size_capture_date = csv_data["size_capture_date"]
 
         return cls(
             drive_id=drive_id,
             drive_name=drive_name,
-            total_members=total_members,
-            total_uw_owners=total_uw_owners,
+            file_count=file_count,
+            member=member,
             org_unit_id=org_unit_id,
             org_unit_name=org_unit_name,
-            member=member,
+            query_date=query_date,
             role=role,
             size=size,
             size_capture_date=size_capture_date,
-            query_date=query_date,
+            total_members=total_members,
+            total_uw_owners=total_uw_owners,
         )
+
+    @property
+    def quota_limit(self):
+        return Quota.to_int(self.org_unit_name)
+
+
+class Quota:
+    """
+    Quota translation class.
+
+    Quotas are implemented in the MSCA backend via Organization Units.
+
+    Reporting from MSCA refers to this org unit instead so conversions must be
+    easy.
+    """
+
+    # TODO: handle the "queued for deletion" OU name
+
+    def to_str(quota: int):
+        "Convert int quota from PRT to str quota MSCA uses internally."
+        # TODO: type check / error?!
+        return f"{quota}GB"
+
+    def to_int(quota: str):
+        "Convert a str quota for MSCA internal use to an int PRT can use."
+        if not quota.endswith("GB"):
+            raise ValueError(f"String {quota} does not end in 'GB'.")
+
+        try:
+            return int(quota[:-2])
+        except ValueError:
+            s = quota[:-2]
+            if not s.isdigit():
+                raise ValueError(f"Quota {quota} is not digits + 'GB' suffix")
+            else:
+                raise ValueError(f"Quota {quota} failed to convert {s} to int")

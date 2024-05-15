@@ -8,9 +8,11 @@ from unittest.mock import (
 
 from commonconf import override_settings
 
-from uw_msca.gdrive import (
+from uw_msca.shared_drive import (
     DAO,
     GoogleDriveState,
+    get_default_org_unit,
+    get_default_quota,
     get_google_drive_states,
     set_drive_quota,
     _msca_drive_base_url,
@@ -40,6 +42,36 @@ class Test_MSCA_GDrive(BaseGDriveTest):
         assert _msca_drive_base_url() == "/google/v1/drive"
 
 
+class Test_get_default_org_unit(BaseGDriveTest):
+    def test(self):
+        with patch.object(
+            DAO,
+            "get_external_resource",
+            side_effect=[
+                # returned after first call
+                DAO.getURL("/google/token_response_fixture"),
+                # further calls raise a StopIteration
+            ],
+        ):
+            result = get_default_org_unit()
+        assert result == "100GB"
+
+
+class Test_get_default_quota(BaseGDriveTest):
+    def test(self):
+        with patch.object(
+            DAO,
+            "get_external_resource",
+            side_effect=[
+                # returned after first call
+                DAO.getURL("/google/token_response_fixture"),
+                # further calls raise a StopIteration
+            ],
+        ):
+            result = get_default_quota()
+        assert result == 100
+
+
 class Test_get_google_drive_states(BaseGDriveTest):
     def test(self):
         with patch.object(
@@ -63,7 +95,7 @@ class Test_get_google_drive_states(BaseGDriveTest):
 class Test_set_drive_quota(BaseGDriveTest):
     def test(self):
         drive_id = "0AIdwn8Py42DEADBEEF"
-        quota = "03 TB"
+        quota = 3000
         with patch.object(
             DAO,
             "get_external_resource",
@@ -74,5 +106,5 @@ class Test_set_drive_quota(BaseGDriveTest):
             result = set_drive_quota(quota=quota, drive_id=drive_id)
 
         assert result == {
-            "message": f"Drive '{drive_id}' successfully moved to {quota}"
+            "message": f"Drive '{drive_id}' successfully moved to 3000GB"
         }
