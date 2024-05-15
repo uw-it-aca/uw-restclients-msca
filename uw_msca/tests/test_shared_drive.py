@@ -8,7 +8,7 @@ from unittest.mock import (
 
 from commonconf import override_settings
 
-from uw_msca.gdrive import (
+from uw_msca.shared_drive import (
     DAO,
     GoogleDriveState,
     get_default_org_unit,
