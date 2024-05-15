@@ -151,9 +151,7 @@ class Quota:
     def to_int(quota: str):
         "Convert a str quota for MSCA internal use to an int PRT can use."
         if not quota.endswith("GB"):
-            raise ValueError(
-                f"String {quota} does not end in 'GB' as MSCA quota strs should."
-            )
+            raise ValueError(f"String {quota} does not end in 'GB'.")
 
         try:
             return int(quota[:-2])
