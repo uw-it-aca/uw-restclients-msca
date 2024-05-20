@@ -21,12 +21,15 @@ class ValidatedUser(models.Model):
         """
         accept a range of truthy values and return a bool
         """
-        return valid if isinstance(
-            valid, bool) else (
-                valid.lower() in ['true', 'yes', '1']) if (
-                    isinstance(valid, str)) else (
-                        valid != 0) if (
-                            isinstance(valid, int)) else False
+        return (
+            valid
+            if isinstance(valid, bool)
+            else (
+                (valid.lower() in ["true", "yes", "1"])
+                if (isinstance(valid, str))
+                else (valid != 0) if (isinstance(valid, int)) else False
+            )
+        )
 
     def json_data(self):
         return {"name": self.name, "valid": self.valid}
@@ -101,7 +104,7 @@ class GoogleDriveState(models.Model):
         "query_date",
         "size",
         "file_count",
-        "size_capture_date",
+        "size_query_date",
     )
 
     @classmethod
@@ -120,8 +123,7 @@ class GoogleDriveState(models.Model):
         query_date = csv_data["query_date"]
         size = csv_data["size"]  # in MB
         file_count = csv_data["file_count"]
-        # disappared from report; waiting for response from Ken on this
-        # size_capture_date = csv_data["size_capture_date"]
+        size_query_date = csv_data["size_query_date"]
 
         return cls(
             drive_id=drive_id,
@@ -133,7 +135,7 @@ class GoogleDriveState(models.Model):
             query_date=query_date,
             role=role,
             size=size,
-            # size_capture_date=size_capture_date,
+            size_query_date=size_query_date,
             total_members=total_members,
             total_uw_owners=total_uw_owners,
         )
