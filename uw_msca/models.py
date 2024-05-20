@@ -118,9 +118,10 @@ class GoogleDriveState(models.Model):
         org_unit_id = csv_data["org_unitID"]
         org_unit_name = csv_data["org_unitName"]
         query_date = csv_data["query_date"]
-        size = csv_data["size"]
+        size = csv_data["size"]  # in MB
         file_count = csv_data["file_count"]
-        size_capture_date = csv_data["size_capture_date"]
+        # disappared from report; waiting for response from Ken on this
+        # size_capture_date = csv_data["size_capture_date"]
 
         return cls(
             drive_id=drive_id,
@@ -132,7 +133,7 @@ class GoogleDriveState(models.Model):
             query_date=query_date,
             role=role,
             size=size,
-            size_capture_date=size_capture_date,
+            # size_capture_date=size_capture_date,
             total_members=total_members,
             total_uw_owners=total_uw_owners,
         )
@@ -140,6 +141,15 @@ class GoogleDriveState(models.Model):
     @property
     def quota_limit(self):
         return Quota.to_int(self.org_unit_name)
+
+    @property
+    def size_gigabytes(self):
+        """
+        Return size in GB.
+
+        Native size field is in MB.
+        """
+        return self.size / 1024
 
 
 class Quota:
