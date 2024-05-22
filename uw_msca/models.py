@@ -89,6 +89,7 @@ class GoogleDriveState(models.Model):
     role = models.CharField(max_length=13)
     query_date = models.DateTimeField()
     total_uw_owners = models.PositiveIntegerField()
+    size = models.PositiveIntegerField()
     # TODO: where is size, size_capture_date, etc? clean up Mike!
 
     EXPECTED_CSV_FIELDS = (
