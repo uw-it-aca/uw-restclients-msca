@@ -1,4 +1,4 @@
-# Copyright 2024 UW-IT, University of Washington
+# Copyright 2024 UW-IT, University of Washingtone
 # SPDX-License-Identifier: Apache-2.0
 
 import json
@@ -90,7 +90,6 @@ class GoogleDriveState(models.Model):
     query_date = models.DateTimeField()
     total_uw_owners = models.PositiveIntegerField()
     size = models.PositiveIntegerField()
-    # TODO: where is size, size_capture_date, etc? clean up Mike!
 
     EXPECTED_CSV_FIELDS = (
         "id",
@@ -108,38 +107,11 @@ class GoogleDriveState(models.Model):
         "size_query_date",
     )
 
-    @classmethod
-    def from_csv(cls, csv_data: dict):
-        """
-        Factory for creating from CSV data from a csv.DictReader.
-        """
-        drive_id = csv_data["drive_id"]
-        drive_name = csv_data["drive_name"]
-        member = csv_data["member"]
-        role = csv_data["role"]
-        total_members = csv_data["total_members"]
-        total_uw_owners = csv_data["total_uwowners"]
-        org_unit_id = csv_data["org_unitID"]
-        org_unit_name = csv_data["org_unitName"]
-        query_date = csv_data["query_date"]
-        size = csv_data["size"]  # in MB
-        file_count = csv_data["file_count"]
-        size_query_date = csv_data["size_query_date"]
-
-        return cls(
-            drive_id=drive_id,
-            drive_name=drive_name,
-            file_count=file_count,
-            member=member,
-            org_unit_id=org_unit_id,
-            org_unit_name=org_unit_name,
-            query_date=query_date,
-            role=role,
-            size=size,
-            size_query_date=size_query_date,
-            total_members=total_members,
-            total_uw_owners=total_uw_owners,
-        )
+    CSV_FIELD_MAP = {
+        "org_unitID": "org_unit_id",
+        "org_unitName": "org_unit_name",
+        "total_uwowners": "total_uw_owners"
+    }
 
     @property
     def quota_limit(self):
@@ -153,6 +125,55 @@ class GoogleDriveState(models.Model):
         Native size field is in MB.
         """
         return self.size / 1024
+
+    @classmethod
+    def from_csv(cls, csv_data: dict):
+        """
+        Factory for creating from CSV data from a csv.DictReader.
+        """
+        fields = dict([cls._map(k, v) for (k, v) in csv_data.items()])
+        return cls(**fields)
+
+    @classmethod
+    def _map(cls, k, v):
+        """
+        Map CSV field name to model field name
+        and CSV string value to appropriate model class value
+        """
+        if k not in cls.EXPECTED_CSV_FIELDS:
+            raise ValueError(f"Unexpected field: {k}")
+
+        try:
+            field_name = cls.CSV_FIELD_MAP[k]
+        except KeyError:
+            field_name = k
+
+        if 'Integer' in cls._field_class(field_name):
+            try:
+                field_value = int(v)
+            except ValueError:
+                field_value = 0
+        else:
+            field_value = v
+
+        return field_name, field_value
+
+    @classmethod
+    def _field_class(cls, field_name):
+        """
+        Return the class name for the provided field name
+        """
+        try:
+            return cls.__dict__[field_name].__class__.__name__
+        except KeyError:
+            return ''
+
+    @classmethod
+    def _int(cls, value):
+        try:
+            return int(value)
+        except ValueError:
+            return 0
 
 
 class Quota:

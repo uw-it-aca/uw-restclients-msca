@@ -90,6 +90,10 @@ class Test_get_google_drive_states(BaseGDriveTest):
 
         assert len(gdrive_states) == 3
         assert all(isinstance(X, GoogleDriveState) for X in gdrive_states)
+        assert gdrive_states[0].org_unit_name == "uw.edu"
+        assert gdrive_states[0].org_unit_id == "00gjdgxs0123458"
+        assert gdrive_states[0].total_uw_owners == 2
+        assert gdrive_states[0].size == 307
 
 
 class Test_set_drive_quota(BaseGDriveTest):
