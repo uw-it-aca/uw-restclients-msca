@@ -1,0 +1,4 @@
+id,drive_id,drive_name,member,role,total_members,total_uwowners,org_unitID,org_unitName,query_date,size,file_count,size_query_date
+1,DEADBEEFAgMidUk9PVA,"Math & Victory",braxton@uw.edu,organizer,2,2,00gjdgxs0123458,uw.edu,2024-04-03T00:00:00.508Z,307,8,2024-04-02T14:44:28.376Z
+2,DEADBEEFAgMidUk9PVA,"Math & Victory",vague@uw.edu,organizer,2,2,00gjdgxs01233458,uw.edu,2024-04-03T00:00:00.508Z,307,8,2024-04-02T14:44:28.376Z
+3,DEADBEEFCoPTYUk9PVA,"3rd yrs",janedoe@uw.edu,organizer,5,2,00229gxs0s1s0c8,uw.edu,2024-04-03T00:00:00.508Z,974,13,2024-04-02T14:44:28.376Z
