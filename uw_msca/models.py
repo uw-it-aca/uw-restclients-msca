@@ -80,7 +80,7 @@ class GoogleDriveState(models.Model):
     # max_length values informed by examining all current results
     # TODO: more thorough solution
     drive_id = models.SlugField(max_length=19)
-    drive_name = models.SlugField(max_length=125)
+    drive_name = models.TextField()
     total_members = models.PositiveIntegerField()
     org_unit_id = models.SlugField(max_length=15)
     # e.g., "100 TB"; longest observed as of 2024-04-03 is 12 long
