@@ -1,4 +1,4 @@
-# Copyright 2024 UW-IT, University of Washington
+# Copyright 2025 UW-IT, University of Washington
 # SPDX-License-Identifier: Apache-2.0
 
 from unittest import TestCase
@@ -20,14 +20,6 @@ from uw_msca.shared_drive import (
 
 
 @override_settings(
-    RESTCLIENTS_MSCA_OAUTH_TOKEN_URL=(
-        "https://login.microsoftonline.com/example.uw.edu/oauth2/v2.0/token",
-    ),
-    RESTCLIENTS_MSCA_REPORT_SCOPE=(
-        "api://beef821f-dead-46ac-9829-f9a87eb12c37/.default"
-    ),
-    RESTCLIENTS_MSCA_CLIENT_ID="beef821f-dead-46ac-9829-f9a87eb12c37",
-    RESTCLIENTS_MSCA_CLIENT_SECRET="my-secret",
     RESTCLIENTS_MSCA_HOST="https://msca.hosts",
     RESTCLIENTS_MSCA_SUBSCRIPTION_KEY="my-subscription-key",
     RESTCLIENTS_MSCA_DAO_CLASS="Mock",
@@ -79,8 +71,6 @@ class Test_get_google_drive_states(BaseGDriveTest):
             "get_external_resource",
             side_effect=[
                 # returned after first call
-                DAO.getURL("/google/token_response_fixture"),
-                # returned after second call
                 DAO.getURL("/google/report_response_fixture"),
                 # further calls raise a StopIteration
             ],
