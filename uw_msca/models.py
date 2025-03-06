@@ -52,7 +52,7 @@ class Delegate(models.Model):
     def json_data(self):
         return {
             "user": self.user,
-            "delegate": self.name,
+            "delegate": self.delegate,
             "access_right": self.access_right,
         }
 

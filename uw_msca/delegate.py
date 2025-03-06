@@ -62,17 +62,19 @@ def _msca_remove_delegate_url(netid, delegate, access_type):
 
 def get_delegates(netid):
     """
-    Returns whether or not given user has access to Outlook mailbox
+    Returns delegate list for given netid
     """
     url = _msca_get_delegate_url(netid)
     response = get_resource(url)
-
-    json_response = json.loads(response)
-    user = json_response['TargetNetid']
     delegates = []
-    for delegate in json_response['Delegates']:
-        delegates.append(Delegate().from_json(user, delegate))
-
+    for delegations in json.loads(response):
+        mailbox = delegations['netid']
+        if mailbox == netid:
+            for delegate in delegations['delegates']:
+                delegates.append(Delegate().from_json(mailbox, delegate))
+        else:
+            logger.error(
+                f"get_delegates: netid mismatch: {netid} != {mailbox}")
     return delegates
 
 

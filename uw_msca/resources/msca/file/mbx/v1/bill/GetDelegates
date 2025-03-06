@@ -1,9 +1,9 @@
-{
-    "TargetNetid": "bill",
-    "Delegates": [
+[{
+    "netid": "bill",
+    "delegates": [
         {
             "User": "jstaff@uw.edu",
             "AccessRights": "FullAccess"
         }
     ]
-}
+}]
