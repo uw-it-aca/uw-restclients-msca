@@ -1,4 +1,4 @@
-[{
+{
     "netid": "javerage",
     "delegates": [
         {
@@ -10,4 +10,4 @@
             "AccessRights": "SendAs"
         }
     ]
-}]
+}

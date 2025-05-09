@@ -62,20 +62,27 @@ def _msca_remove_delegate_url(netid, delegate, access_type):
 
 def get_delegates(netid):
     """
-    Returns delegate list for given netid
+    Returns delegate list for given netid, mind payload changes
     """
     url = _msca_get_delegate_url(netid)
     response = get_resource(url)
-    delegates = []
-    for delegations in json.loads(response):
-        mailbox = delegations['netid']
-        if mailbox == netid:
-            for delegate in delegations['delegates']:
-                delegates.append(Delegate().from_json(mailbox, delegate))
-        else:
-            logger.error(
-                f"get_delegates: netid mismatch: {netid} != {mailbox}")
-    return delegates
+    try:
+        data = json.loads(response)
+        if isinstance(data, list) and len(data) == 1:
+            data = data[0]
+        elif not isinstance(data, dict):
+            raise Exception("unexpected data: {data}")
+
+        mailbox = data['netid']
+        delegates = data['delegates']
+        if netid == mailbox:
+            return [Delegate().from_json(mailbox, d) for d in delegates]
+
+        logger.error(f"get_delegates: netid mismatch: {netid} != {mailbox}")
+    except (KeyError, json.JSONDecodeError) as ex:
+        logger.error(f"get_delegates: malformed response: {delegations}")
+
+    return []
 
 
 def get_all_delegates():
