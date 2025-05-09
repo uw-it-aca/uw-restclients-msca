@@ -1,4 +1,4 @@
-[{
+{
     "netid": "bill",
     "delegates": [
         {
@@ -6,4 +6,4 @@
             "AccessRights": "FullAccess"
         }
     ]
-}]
+}
