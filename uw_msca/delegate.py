@@ -80,7 +80,7 @@ def get_delegates(netid):
 
         logger.error(f"get_delegates: netid mismatch: {netid} != {mailbox}")
     except (KeyError, json.JSONDecodeError) as ex:
-        logger.error(f"get_delegates: malformed response: {delegations}")
+        logger.error(f"get_delegates: malformed response: {response}")
 
     return []
 
