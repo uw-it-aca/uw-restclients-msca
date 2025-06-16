@@ -19,52 +19,52 @@ def _delegate_url_base(netid):
     """
     Return UW MSCA base uri for Office access delegates
     """
-    return "{}/{}".format(url_base(), netid)
+    return f"{url_base()}/{netid}"
 
 
-def _msca_get_delegate_url(netid):
+def _msca_get_delegates_url(netid):
     """
     Return UW MSCA uri for Office access delegates
     """
-    return "{}/GetDelegates".format(_delegate_url_base(netid))
+    return f"{_delegate_url_base(netid)}/getdelegates"
 
 
 def _msca_get_all_delegates_csv_url():
     """
     Return UW MSCA uri for Office all access delegates
     """
-    return "{}/GetDelegateCsv".format(url_base())
+    return u"{rl_base()}/getdelegatecsv"
 
 
 def _msca_set_delegate_url(netid, delegate, access_type):
     """
     Return UW MSCA uri to set delegate access
     """
-    return "{}/SetDelegatePerms/{}/{}".format(
-        _delegate_url_base(netid), delegate, access_type)
+    return (f"{_delegate_url_base(netid)}/SetDelegatePerms/"
+            f"{delegate}/{access_type}")
 
 
 def _msca_update_delegate_url(netid, delegate, old_access_type, access_type):
     """
     Return UW MSCA uri to set delegate access
     """
-    return "{}/UpdateDelegatePerms-azf/{}/{}/{}".format(
-        _delegate_url_base(netid), delegate, old_access_type, access_type)
+    return (f"{_delegate_url_base(netid)}/UpdateDelegatePerms/"
+            f"{delegate}/{old_access_type}/{access_type}")
 
 
 def _msca_remove_delegate_url(netid, delegate, access_type):
     """
     Return UW MSCA uri for removing delegate access
     """
-    return "{}/RemoveDelegatePerms/{}/{}".format(
-        _delegate_url_base(netid), delegate, access_type)
+    return (f"{_delegate_url_base(netid)}/removedelegateperms/"
+            f"{delegate}/{access_type}")
 
 
 def get_delegates(netid):
     """
     Returns delegate list for given netid, mind payload changes
     """
-    url = _msca_get_delegate_url(netid)
+    url = _msca_get_delegates_url(netid)
     response = get_resource(url)
     try:
         data = json.loads(response)

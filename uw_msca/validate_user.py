@@ -27,4 +27,4 @@ def _msca_validate_user_url(name):
     """
     Return UW MSCA uri for Office access validation
     """
-    return "{}/ValidateUser?Name={}".format(url_base(), name)
+    return f"{url_base()}/validateuser/{name}"
