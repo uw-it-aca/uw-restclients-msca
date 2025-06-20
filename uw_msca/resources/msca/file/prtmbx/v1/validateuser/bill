@@ -1,1 +1,4 @@
-{"name":"bill","valid":"false"}
+{
+   "msg": "Account netid is disabled.",
+   "description": "netid failed validation as it is disabled."
+}
