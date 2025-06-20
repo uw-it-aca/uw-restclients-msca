@@ -21,4 +21,3 @@ class GetDelegatesTest(TestCase):
         delegates = get_all_delegates()
         mock_method.assert_called_with(
             "https://host/blob/MbxAll-Report-date.csv")
-
