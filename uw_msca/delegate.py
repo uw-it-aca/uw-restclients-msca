@@ -159,9 +159,8 @@ def update_delegate(netid, delegate, old_access_type, new_access_type):
         'SetAccesstype': new_access_type,
     })
 
-    response = patch_resource(url, body)
-
     try:
+        response = patch_resource(url, body)
         json_response = json.loads(response)
         return Delegate(user=json_response['Netid'],
                         delegate=json_response['Delegate'],
@@ -184,13 +183,12 @@ def remove_delegate(netid, delegate, access_type):
         'removeaccesstype': access_type
     })
 
-    response = post_resource(url, body)
-
     try:
+        response = post_resource(url, body)
         json_response = json.loads(response)
         return Delegate(user=json_response['Netid'],
                         delegate=json_response['Delegate'],
-                        access_right=json_response['AccessType'])
+                        access_right=json_response['Removed AccessType'])
     except DataFailureException as ex:
         raise
     except Exception as ex:
