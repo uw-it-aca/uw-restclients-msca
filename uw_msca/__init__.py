@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 def url_base(override=None):
     # until msca api finalized
     return '/{}/{}'.format(
-        override if override else 'mbx',
+        override if override else 'prtmbx',
         getattr(settings, 'RESTCLIENTS_MSCA_VERSION', 'v1'))
 
 

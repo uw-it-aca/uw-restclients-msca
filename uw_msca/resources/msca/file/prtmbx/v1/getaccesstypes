@@ -1,5 +1,5 @@
 {
-    "value": [{
+    "accessTypes": [{
             "displayname": "Full Access and Send As",
             "id": "FullAccessandSendAs"
         },
