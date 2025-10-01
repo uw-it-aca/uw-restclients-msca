@@ -1,9 +1,6 @@
 {
-    "TargetNetid": "jstaff",
-    "Delegates": [
-        {
-            "User": "javerage@uw.edu",
-            "AccessRights": "SendAs"
-        }
-    ]
+    "Netid": "jstaff",
+    "Delegate": "javerage@uw.edu",
+    "SetAccessType": "SendAs",
+    "Message": "Access updated successfully"
 }
