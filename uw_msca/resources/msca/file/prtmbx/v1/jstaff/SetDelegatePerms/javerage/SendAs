@@ -1,9 +1,0 @@
-{
-    "TargetNetid": "jstaff",
-    "Delegates": [
-        {
-            "User": "javerage@uw.edu",
-            "AccessRights": "SendAs"
-        }
-    ]
-}
