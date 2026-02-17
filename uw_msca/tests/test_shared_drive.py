@@ -14,6 +14,8 @@ from uw_msca.shared_drive import (
     get_default_org_unit,
     get_default_quota,
     get_google_drive_states,
+    mark_drive_for_deletion,
+    rescue_drive_from_deletion,
     set_drive_quota,
     _msca_drive_base_url,
 )
@@ -29,9 +31,25 @@ class BaseGDriveTest(TestCase):
     abstract = True
 
 
+@override_settings(
+    RESTCLIENTS_MSCA_HOST="https://msca.hosts",
+    RESTCLIENTS_MSCA_SUBSCRIPTION_KEY="my-subscription-key",
+    RESTCLIENTS_MSCA_DAO_CLASS="Mock",
+    RESTCLIENTS_MSCA_SHARED_DRIVE_EVAL_API="google-test",
+)
+class BaseEvalGDriveTest(TestCase):
+    "Base class for GDrive tests."
+    abstract = True
+
+
 class Test_MSCA_GDrive(BaseGDriveTest):
     def test_msca_drive_base_url(self):
         assert _msca_drive_base_url() == "/google/v1/drive"
+
+
+class Test_MSCA_Eval_GDrive(BaseEvalGDriveTest):
+    def test_msca_drive_base_url(self):
+        assert _msca_drive_base_url() == "/google-test/drive"
 
 
 class Test_get_default_org_unit(BaseGDriveTest):
@@ -101,4 +119,39 @@ class Test_set_drive_quota(BaseGDriveTest):
 
         assert result == {
             "message": f"Drive '{drive_id}' successfully moved to 3000GB"
+        }
+
+
+class Test_mark_drive_for_deletion(BaseGDriveTest):
+    def test(self):
+        drive_id = "0AIdwn8Py42DEADBEEF"
+        with patch.object(
+            DAO,
+            "get_external_resource",
+            side_effect=[
+                DAO.getURL("/google/token_response_fixture"),
+            ],
+        ):
+            result = mark_drive_for_deletion(drive_id=drive_id)
+
+        assert result == {
+            "message": f"Drive '{drive_id}' successfully moved deletePrt OU"
+        }
+
+
+class Test_rescue_drive_from_deletion(BaseGDriveTest):
+    def test(self):
+        drive_id = "0AIdwn8Py42DEADBEEF"
+        quota = 100
+        with patch.object(
+            DAO,
+            "get_external_resource",
+            side_effect=[
+                DAO.getURL("/google/token_response_fixture"),
+            ],
+        ):
+            result = rescue_drive_from_deletion(quota=quota, drive_id=drive_id)
+
+        assert result == {
+            "message": f"Drive '{drive_id}' successfully moved 100GB OU"
         }
