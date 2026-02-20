@@ -31,25 +31,9 @@ class BaseGDriveTest(TestCase):
     abstract = True
 
 
-@override_settings(
-    RESTCLIENTS_MSCA_HOST="https://msca.hosts",
-    RESTCLIENTS_MSCA_SUBSCRIPTION_KEY="my-subscription-key",
-    RESTCLIENTS_MSCA_DAO_CLASS="Mock",
-    RESTCLIENTS_MSCA_SHARED_DRIVE_EVAL_API="google-test",
-)
-class BaseEvalGDriveTest(TestCase):
-    "Base class for GDrive tests."
-    abstract = True
-
-
 class Test_MSCA_GDrive(BaseGDriveTest):
     def test_msca_drive_base_url(self):
         assert _msca_drive_base_url() == "/google/v1/drive"
-
-
-class Test_MSCA_Eval_GDrive(BaseEvalGDriveTest):
-    def test_msca_drive_base_url(self):
-        assert _msca_drive_base_url() == "/google-test/drive"
 
 
 class Test_get_default_org_unit(BaseGDriveTest):

@@ -17,10 +17,8 @@ logger = logging.getLogger(__name__)
 
 
 def url_base(override=None):
-    # until msca api finalized
-    return '/{}/{}'.format(
-        override if override else 'prtmbx',
-        getattr(settings, 'RESTCLIENTS_MSCA_VERSION', 'v1'))
+    return (f"/{override if override else 'prtmbx'}/"
+            f"{getattr(settings, 'RESTCLIENTS_MSCA_VERSION', 'v1')}")
 
 
 def get_resource(url, headers=None):
@@ -29,13 +27,8 @@ def get_resource(url, headers=None):
         default_headers.update(headers)
 
     response = DAO.getURL(url, default_headers)
-    logger.debug("GET {0} ==status==> {1}".format(url, response.status))
-    if response.status != 200:
-        raise DataFailureException(url, response.status, response.data)
 
-    logger.debug("GET {0} ==data==> {1}".format(url, response.data))
-
-    return response.data
+    return _response("GET", url, response)
 
 
 def post_resource(url, body):
@@ -43,14 +36,8 @@ def post_resource(url, body):
         'Content-Type': 'application/json',
         'Acept': 'application/json',
     }, body)
-    logger.debug("POST {0} ==status==> {1}".format(url, response.status))
 
-    if response.status != 200:
-        raise DataFailureException(url, response.status, response.data)
-
-    logger.debug("POST {0}s ==data==> {1}".format(url, response.data))
-
-    return response.data
+    return _response("POST", url, response)
 
 
 def put_resource(url, body, headers=None):
@@ -66,14 +53,8 @@ def put_resource(url, body, headers=None):
         default_headers,
         body,
     )
-    logger.debug("PUT {0} ==status==> {1}".format(url, response.status))
 
-    if response.status != 200:
-        raise DataFailureException(url, response.status, response.data)
-
-    logger.debug("PUT {0}s ==data==> {1}".format(url, response.data))
-
-    return response.data
+    return _response("PUT", url, response)
 
 
 def patch_resource(url, body):
@@ -81,26 +62,22 @@ def patch_resource(url, body):
         'Content-Type': 'application/json',
         'Acept': 'application/json',
     }, body)
-    logger.debug("PATCH {0} ==status==> {1}".format(url, response.status))
 
-    if response.status != 200:
-        raise DataFailureException(url, response.status, response.data)
-
-    logger.debug("PATCH {0}s ==data==> {1}".format(url, response.data))
-
-    return response.data
+    return _response("PATCH", url, response)
 
 
 def get_external_resource(url, body=None):
     response = DAO.get_external_resource(url, body=body)
 
-    logger.debug(
-        "external_resource {0} ==status==> {1}".format(url, response.status))
+    return _response("external_resource", url, response)
+
+
+def _response(method, url, response):
+    logger.debug(f"{method} {url} ==status==> {response.status}")
 
     if response.status != 200:
         raise DataFailureException(url, response.status, response.data)
 
-    logger.debug(
-        "external_resource {0}s ==data==> {1}".format(url, response.data))
+    logger.debug(f"{method} {url} ==data==> {response.data}")
 
     return response.data

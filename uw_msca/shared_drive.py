@@ -175,12 +175,7 @@ def _rescue_drive_from_deletion_url(drive_id):
 
 def _msca_drive_base_url():
     """
-    prod endpoint is currently google/v1/drive
-    test/dev endpoint is currently google-test/drive
+    Return the base url for MSCA's Google Drive endpoints.
     """
-    try:
-        base = f"/{settings.RESTCLIENTS_MSCA_SHARED_DRIVE_EVAL_API}"
-    except AttributeError:
-        base = url_base(override='google')
-
+    base = url_base(override='google')
     return f"{base}/drive"
