@@ -1,8 +1,6 @@
-# Copyright 2025 UW-IT, University of Washington
+# Copyright 2026 UW-IT, University of Washington
 # SPDX-License-Identifier: Apache-2.0
 
-# Copyright 2024 UW-IT, University of Washington
-# SPDX-License-Identifier: Apache-2.0
 """
 This file contains the interfaces for MSCA's /google/vN/drive endpoints.
 
@@ -15,6 +13,7 @@ import csv
 import io
 import json
 import logging
+from commonconf import settings
 from urllib.parse import urlencode
 
 from uw_msca import (
@@ -22,6 +21,7 @@ from uw_msca import (
     url_base,
     get_resource,
     get_external_resource,
+    post_resource,
     put_resource,
 )
 
@@ -108,6 +108,51 @@ def set_drive_quota(quota: int, drive_id: str):
         return {"message": result}
 
 
+def mark_drive_for_deletion(drive_id: str):
+    """
+    Update Google Drive such that it is marked for deletion
+
+    Args:
+        drive_id: the id of the drive to mark for deletion
+    """
+    resp_data = post_resource(
+        url=_mark_drive_deleted_url(drive_id),
+        body="{}"
+    )
+
+    try:
+        return json.loads(resp_data)
+    except json.JSONDecodeError:
+        result = resp_data.decode()
+        return {"message": result}
+
+
+def rescue_drive_from_deletion(quota: int, drive_id: str):
+    """
+    Update Google Drive such that it is no longer marked for deletion
+
+    Args:
+        drive_id: the id of the drive to mark for deletion
+
+    Raises:
+        ValueError: quota is non-integer value.
+    """
+    str_quota = Quota.to_str(quota)
+
+    data = {"quota": str_quota}
+
+    resp_data = post_resource(
+        url=_rescue_drive_from_deletion_url(drive_id),
+        body=json.dumps(data)
+    )
+
+    try:
+        return json.loads(resp_data)
+    except json.JSONDecodeError:
+        result = resp_data.decode()
+        return {"message": result}
+
+
 def _set_quota_url(drive_id):
     return f"{_msca_drive_base_url()}/{drive_id}/setquota"
 
@@ -120,6 +165,17 @@ def _get_drivestate_url():
     return f"{_msca_drive_base_url()}/getfile"
 
 
-def _msca_drive_base_url():  # returns "/google/v1/drive"
-    base = url_base(override="google")
+def _mark_drive_deleted_url(drive_id):
+    return f"{_msca_drive_base_url()}/{drive_id}/markdelete"
+
+
+def _rescue_drive_from_deletion_url(drive_id):
+    return f"{_msca_drive_base_url()}/{drive_id}/rescue"
+
+
+def _msca_drive_base_url():
+    """
+    Return the base url for MSCA's Google Drive endpoints.
+    """
+    base = url_base(override='google')
     return f"{base}/drive"
